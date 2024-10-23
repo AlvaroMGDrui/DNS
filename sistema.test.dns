@@ -14,7 +14,7 @@ tierra.sistema.test.	IN	A	192.168.57.103
 @					IN	NS	venus.sistema.test.
 venus.sistema.test.		IN	A	192.168.57.102
 
-@					IN  MX  104 marte.sistema.test. 
+@					IN  MX  10 marte.sistema.test. 
 
 tierra      IN  A    192.168.57.103
 venus       IN  A    192.168.57.102
