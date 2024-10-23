@@ -7,13 +7,10 @@ $ORIGIN sistema.test.
 			 604800		; Refresh
 			  86400		; Retry
 			2419200		; Expire
-			   7200 )	; Negative Cache TTL (2 hours = 7200 seconds)
+			   7200 )	; Negative Cache TTL
 ;
 @					IN	NS	tierra.sistema.test.
-tierra.sistema.test.	IN	A	192.168.57.103
 @					IN	NS	venus.sistema.test.
-venus.sistema.test.		IN	A	192.168.57.102
-
 @					IN  MX  10 marte.sistema.test. 
 
 tierra      IN  A    192.168.57.103

@@ -7,13 +7,9 @@ $ORIGIN 57.168.192.in-addr.arpa.
 			 604800		; Refresh
 			  86400		; Retry
 			2419200		; Expire
-			   7200 )	; Negative Cache TTL (2 hours = 7200 seconds)
+			   7200 )	; Negative Cache TTL 
 ;
 @								IN	NS	tierra.sistema.test.
-103.57.168.192.in-addr.arpa.	IN	PTR	tierra.sistema.test.
-@								IN	NS	venus.sistema.test.
-102.57.168.192.in-addr.arpa.	IN	PTR	venus.sistema.test.
-
 
 101 IN  PTR mercurio.sistema.test.
 102 IN  PTR venus.sistema.test.

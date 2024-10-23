@@ -9,12 +9,12 @@
 
 zone "sistema.test" {
     type slave;
-    file "/var/lib/bind/sistema.test";
-    master { 192.168.57.103; };
+    file "/etc/bind/sistema.test.dns";
+    masters { 192.168.57.103; };
 };
 
 zone "57.168.192.in-addr.arpa" {
     type slave;
-    file "/var/lib/bind/192.168.57.dns";
-    master { 192.168.57.103; }; 
+    file "/etc/bind/192.168.57.dns";
+    masters { 192.168.57.103; }; 
 };
