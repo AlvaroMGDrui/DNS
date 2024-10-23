@@ -33,7 +33,7 @@ options {
 	
 	dnssec-validation yes;
 
-	listen-on port 53 { confiables }
+	listen-on port 53 { confiables };
 	listen-on-v6 { none };
 
 	
