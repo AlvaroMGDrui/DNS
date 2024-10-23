@@ -17,7 +17,7 @@ options {
 
 
 	recursion yes;  
-    allow-recursion { confiables; };
+    allow-recursion { confiables;};
 
 
 	forwarders {
@@ -33,8 +33,8 @@ options {
 	
 	dnssec-validation yes;
 
-	listen-on port 53 { confiables; };
-	listen-on-v6 { none; };
+	listen-on port 53 { confiables;};
+	listen-on-v6 { none;};
 
 	
 };
