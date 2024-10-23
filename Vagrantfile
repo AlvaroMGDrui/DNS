@@ -19,6 +19,7 @@ Vagrant.configure("2") do |config|
       cp -v /vagrant/named.conf.localmaster /etc/bind/named.conf.local
       cp -v /vagrant/sistema.test.dns /etc/bind
       cp -v /vagrant/192.168.57.dns /etc/bind
+      cp -v /vagrant/resolv.conf /etc/resolv.conf
       systemctl reload named
       systemctl status named
     SHELL
