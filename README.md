@@ -4,14 +4,14 @@ Creación de un servidor maestro (tierra) y un servidor esclavo (venus) y su pos
 
 ## Tabla de Contenidos
 
-- [Introducción](##Introducción)
-- [Características](##Características)
-- [Archivos](##Archivos)
-- [Tecnologías Utilizadas](##Tecnologías-utilizadas)
+- [Introducción](#Introducción)
+- [Características](#Características)
+- [Archivos](#Archivos)
+- [Tecnologías Utilizadas](#Tecnologías-utilizadas)
 - [Instalación](##Instalación)
-- [Pruebas](##Pruebas)
-- [Licencia](##Licencia)
-- [Autor](##Autor)
+- [Pruebas](#Pruebas)
+- [Licencia](#Licencia)
+- [Autor](#Autor)
 
 ## Introducción
 
@@ -25,38 +25,56 @@ El proyecto se ha creado siguendo las indicaciones del pdf aportado. Se han crea
 - Windows gráfico o server (imaginario en esta práctica)---------------------------marte.sistema.test .104
 
 ### IPv4.
+    ```
     OPTIONS="-u bind -4"
+    ```
 ### dnssec-validation
+    ```
     dnssec-validation yes;
+    ```
 
 ### Consultas recursivas solo mediante la red 127.0.0.0/8 y la red 192.168.57.0/24 usando acl.
+    ```
     acl "confiables" {
     127.0.0.0/8;
     192.168.57.0/24;
 };
-
+    ```
 
 ### Tiempo en caché de las respuestas negativas - 7200 segundos.
+    ```
     7200 	; Negative Cache TTL
 
+    ```
+
 ### Consultas no autorizadas reenviadas al servidor DNS 208.67.222.222 (OpenDNS).
+    ```
     forwarders {
         208.67.222.222;
     };
 
     forward only;
+    ```
 
 ### ns1.sistema.test. es alias de tierra.sistema.test.
+```
 ns1         IN  CNAME   tierra.sistema.test.
+```
 
 ### ns2.sistema.test. es alias de venus.sistema.test.
+```
 ns2         IN  CNAME   venus.sistema.test.
+```
 
 ### mail.sistema.test. es alias de marte.sistema.test.
+```
 mail        IN  CNAME   marte.sistema.test.
+```
 
 ### marte.sistema.test. es servidor de correo de sistema.test.
+```
 @					IN  MX  10 marte.sistema.test. 
+```
 
 
 ## Tecnologías Utilizadas
@@ -69,6 +87,52 @@ Enumera las tecnologías, lenguajes de programación y herramientas que se utili
 
 
 ## Archivos
+
+### Vagrantfile
+
+```
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bookworm64"
+  # config.vbguest.auto_update = false
+  config.vm.provision "shell", name: "update", inline: <<-SHELL
+      apt-get update
+      apt-get install -y bind9
+    SHELL
+
+  config.vm.define "tierra" do |tierra|
+    tierra.vm.hostname = "tierra.sistema.test"
+    tierra.vm.network "private_network", ip: "192.168.57.103"
+
+    tierra.vm.provision "shell", name: "dns-master", inline: <<-SHELL
+      cp -v /vagrant/named /etc/default
+      cp -v /vagrant/named.conf.options /etc/bind
+      cp -v /vagrant/named.conf.localmaster /etc/bind/named.conf.local
+      cp -v /vagrant/sistema.test.dns /etc/bind
+      cp -v /vagrant/192.168.57.dns /etc/bind
+      cp -v /vagrant/resolv.conf /etc/resolv.conf
+      systemctl reload named
+      systemctl status named
+    SHELL
+  end # master
+
+  config.vm.define "venus" do |venus|
+    venus.vm.hostname = "venus.sistema.test"
+    venus.vm.network "private_network", ip: "192.168.57.102"
+
+    venus.vm.provision "shell", name: "dns-slave", inline: <<-SHELL
+      cp -v /vagrant/named /etc/default
+      cp -v /vagrant/named.conf.options /etc/bind
+      cp -v /vagrant/named.conf.localslave /etc/bind/named.conf.local
+      systemctl reload named
+      systemctl status named
+    SHELL
+  end # slave
+end
+
+```
 
 ### named
 
@@ -274,6 +338,7 @@ Para llevar a cabo la intalación de los servidores será necesario disponer de 
 Consultas con dig y nslookup
 
 ### Se resuelven los regsitros tipo A correctamente.
+```
 dig A mercurio.sistema.test
 dig A venus.sistema.test
 dig A tierra.sistema.test
@@ -283,8 +348,10 @@ nslookup mercurio.sistema.test
 nslookup venus.sistema.test
 nslookup tierra.sistema.test
 nslookup marte.sistema.test
+```
 
 ### Se resuelven de forma inversa sus direcciones IP.
+```
 dig -x 192.168.57.101
 dig -x 192.168.57.102
 dig -x 192.168.57.103
@@ -294,32 +361,45 @@ nslookup 192.168.57.101
 nslookup 192.168.57.102
 nslookup 192.168.57.103
 nslookup 192.168.57.104
+```
 
 ### Se resuelven los alias de forma correcta.
+```
 dig ns1.sistema.test
 dig ns2.sistema.test
 
 nslookup ns1.sistema.test
 nslookup ns2.sistema.test
+```
 
 ### Se obtienen los servidores NS de sistema.test.
+```
 dig NS sistema.test
 
 nslookup -type=NS sistema.test
-
+```
 ### Se obtienen los servidores MX de sistema.test.
+```
 dig MX sistema.test
 
 nslookup -type=MX sistema.test
+```
 
 ### Se ha realizado la transferencia de la zona entre el servidor DNS maestro y el esclavo mediante AXFR de forma correcta.
 Desde venus
+```
+dig @192.168.57.103 sistema.test AXFR
 
-dig AXFR sistema.test @venus.sistema.test
+```
+
+![transferencia](AXFR.PNG)
 
 
 - Tanto maestro como esclavo son capaces de responder a las mismas preguntas.
 
+### Test.sh
+
+![test.sh](tests.PNG)
 
 ## Licencia
 
