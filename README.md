@@ -25,36 +25,36 @@ El proyecto se ha creado siguendo las indicaciones del pdf aportado. Se han crea
 - Windows gráfico o server (imaginario en esta práctica)---------------------------marte.sistema.test .104
 
 ### IPv4.
-    ```
+ ```
     OPTIONS="-u bind -4"
-    ```
+```
 ### dnssec-validation
-    ```
+```
     dnssec-validation yes;
-    ```
+```
 
 ### Consultas recursivas solo mediante la red 127.0.0.0/8 y la red 192.168.57.0/24 usando acl.
-    ```
+```
     acl "confiables" {
     127.0.0.0/8;
     192.168.57.0/24;
 };
-    ```
+```
 
 ### Tiempo en caché de las respuestas negativas - 7200 segundos.
-    ```
+```
     7200 	; Negative Cache TTL
 
-    ```
+```
 
 ### Consultas no autorizadas reenviadas al servidor DNS 208.67.222.222 (OpenDNS).
-    ```
+```
     forwarders {
         208.67.222.222;
     };
 
-    forward only;
-    ```
+     forward only;
+```
 
 ### ns1.sistema.test. es alias de tierra.sistema.test.
 ```
